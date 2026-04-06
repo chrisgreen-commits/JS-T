@@ -145,43 +145,56 @@ html, body { width:100%; height:100%; overflow:hidden; background:var(--body-bg)
 }
 
 /* ── D-PAD ── */
-#dpad { position:relative; width:114px; height:114px; flex-shrink:0; }
+#dpad { position:relative; width:114px; height:114px; flex-shrink:0; touch-action:none; }
 
-/* Cross shape base */
-#dpadCross {
-  position:absolute;
-  left:38px; top:38px; width:38px; height:38px;
-  background:var(--dpad-bg);
-  box-shadow:
-    -38px 0 0 var(--dpad-bg),
-     38px 0 0 var(--dpad-bg),
-     0 -38px 0 var(--dpad-bg),
-     0  38px 0 var(--dpad-bg);
-  border-radius:2px;
-}
-
-.dpad-btn {
-  position:absolute; background:var(--dpad-btn);
-  border:1px solid var(--dpad-border);
-  border-radius:3px;
-  display:flex; align-items:center; justify-content:center;
-  color:var(--dpad-arrow); cursor:pointer;
-  transition:background 0.06s, transform 0.06s;
+/* ── MENU BUTTON ── */
+#menuBtn {
+  font-family:'Press Start 2P',monospace; font-size:5px;
+  background:var(--center-bg); border:1px solid var(--center-border);
+  color:var(--label-color); border-radius:4px;
+  padding:4px 8px; cursor:pointer;
   -webkit-tap-highlight-color:transparent;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.1);
+  transition:background 0.1s;
 }
-.dpad-btn:active, .dpad-btn.pressed {
-  background:var(--dpad-bg);
-  transform:scale(0.93);
-  box-shadow: 0 1px 2px rgba(0,0,0,0.4);
-}
-#dLeft  { left:0;   top:38px; width:38px; height:38px; border-radius:4px 0 0 4px; }
-#dRight { right:0;  top:38px; width:38px; height:38px; border-radius:0 4px 4px 0; }
-#dUp    { left:38px;top:0;    width:38px; height:38px; border-radius:4px 4px 0 0; }
-#dDown  { left:38px;bottom:0; width:38px; height:38px; border-radius:0 0 4px 4px; }
-#dCenter{ left:38px;top:38px; width:38px; height:38px; background:var(--dpad-bg); pointer-events:none; border:none; box-shadow:none; border-radius:0; }
+#menuBtn:active { background:var(--dpad-bg); color:#fff; }
 
-/* ── FACE BUTTONS ── */
+/* ── ANALOG DPAD ── */
+#dpad {
+  position:relative; width:114px; height:114px; flex-shrink:0;
+  touch-action:none;
+}
+#dpadZone {
+  position:absolute; inset:0; border-radius:50%;
+  background:radial-gradient(circle at center, var(--dpad-btn) 30%, var(--dpad-bg) 100%);
+  border:2px solid var(--dpad-border);
+  box-shadow:0 3px 8px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1);
+  cursor:pointer;
+}
+/* Crosshair lines on the disk */
+#dpadZone::before, #dpadZone::after {
+  content:''; position:absolute; background:var(--dpad-border); opacity:0.5;
+}
+#dpadZone::before { left:50%; top:10%; width:1px; height:80%; transform:translateX(-50%); }
+#dpadZone::after  { top:50%; left:10%; height:1px; width:80%; transform:translateY(-50%); }
+/* Arrow indicators */
+.dpad-arrow {
+  position:absolute; color:var(--dpad-arrow); opacity:0.7;
+  pointer-events:none; display:flex; align-items:center; justify-content:center;
+}
+#dArrowUp    { top:8px;  left:50%; transform:translateX(-50%); }
+#dArrowDown  { bottom:8px; left:50%; transform:translateX(-50%); }
+#dArrowLeft  { left:8px; top:50%; transform:translateY(-50%); }
+#dArrowRight { right:8px;top:50%; transform:translateY(-50%); }
+/* Thumb nub */
+#dpadNub {
+  position:absolute; width:36px; height:36px; border-radius:50%;
+  background:radial-gradient(circle at 40% 35%, var(--dpad-btn), var(--dpad-bg));
+  border:1px solid var(--dpad-border);
+  box-shadow:0 2px 6px rgba(0,0,0,0.5);
+  pointer-events:none;
+  top:50%; left:50%; transform:translate(-50%,-50%);
+  transition:transform 0.05s;
+}
 #faceButtons { display:flex; flex-direction:column; gap:10px; align-items:flex-end; flex-shrink:0; }
 .face-btn {
   width:68px; height:34px; border-radius:17px;
@@ -263,22 +276,16 @@ html, body { width:100%; height:100%; overflow:hidden; background:var(--body-bg)
   </div>
   <div id="controller">
     <div id="dpad">
-      <div id="dpadCross"></div>
-      <div class="dpad-btn" id="dLeft">
-        <svg width="14" height="14" viewBox="0 0 16 16"><polygon points="12,2 12,14 2,8" fill="currentColor"/></svg>
+      <div id="dpadZone">
+        <div class="dpad-arrow" id="dArrowUp"><svg width="12" height="12" viewBox="0 0 16 16"><polygon points="2,12 14,12 8,2" fill="currentColor"/></svg></div>
+        <div class="dpad-arrow" id="dArrowDown"><svg width="12" height="12" viewBox="0 0 16 16"><polygon points="2,4 14,4 8,14" fill="currentColor"/></svg></div>
+        <div class="dpad-arrow" id="dArrowLeft"><svg width="12" height="12" viewBox="0 0 16 16"><polygon points="12,2 12,14 2,8" fill="currentColor"/></svg></div>
+        <div class="dpad-arrow" id="dArrowRight"><svg width="12" height="12" viewBox="0 0 16 16"><polygon points="4,2 4,14 14,8" fill="currentColor"/></svg></div>
+        <div id="dpadNub"></div>
       </div>
-      <div class="dpad-btn" id="dRight">
-        <svg width="14" height="14" viewBox="0 0 16 16"><polygon points="4,2 4,14 14,8" fill="currentColor"/></svg>
-      </div>
-      <div class="dpad-btn" id="dUp">
-        <svg width="14" height="14" viewBox="0 0 16 16"><polygon points="2,12 14,12 8,2" fill="currentColor"/></svg>
-      </div>
-      <div class="dpad-btn" id="dDown">
-        <svg width="14" height="14" viewBox="0 0 16 16"><polygon points="2,4 14,4 8,14" fill="currentColor"/></svg>
-      </div>
-      <div id="dCenter"></div>
     </div>
     <div id="centerInfo">
+      <button id="menuBtn">☰ MENU</button>
       <div id="stackDisplay">
         <span id="stackTop" style="color:#e63946;">▲ JIMMY</span><br>
         <span id="stackMid" style="color:#f5c842;">★ SAM</span><br>
@@ -351,121 +358,230 @@ const input = { left:false, right:false, up:false, down:false, attack:false, car
 const inputPressed = { attack:false, card:false, switchStack:false, up:false };
 const inputPrev = { attack:false, card:false, switchStack:false, up:false };
 
-// Multi-touch: map each touch identifier to the button key it started on
-const touchMap = new Map(); // touchId → inputKey
+// ── ANALOG DPAD ──────────────────────────────────────────
+// Single circular zone — angle determines left/right/up/down
+// Diagonals activate two directions simultaneously
+const DEAD_ZONE = 0.25; // fraction of radius before activating
+const dpadEl = document.getElementById('dpadZone');
+const nubEl  = document.getElementById('dpadNub');
+let dpadTouchId = null;
 
-function getKeyForElement(el) {
-  const id = el.id;
-  if(id==='dLeft') return 'left';
-  if(id==='dRight') return 'right';
-  if(id==='dUp') return 'up';
-  if(id==='dDown') return 'down';
-  if(id==='btnAttack') return 'attack';
-  if(id==='btnCard') return 'card';
-  if(id==='btnSwitch') return 'switchStack';
-  return null;
+function dpadAngle(x, y, cx, cy, r) {
+  const dx = (x - cx) / r;
+  const dy = (y - cy) / r;
+  const dist = Math.sqrt(dx*dx + dy*dy);
+  if(dist < DEAD_ZONE) return { left:false, right:false, up:false, down:false, dist };
+  return {
+    left:  dx < -0.3,
+    right: dx >  0.3,
+    up:    dy < -0.3,
+    down:  dy >  0.3,
+    dist,
+  };
 }
 
-function getTouchTarget(touch) {
-  // Use elementFromPoint to find what's under each touch
-  return document.elementFromPoint(touch.clientX, touch.clientY);
+function updateDpadFromPoint(x, y) {
+  const rect = dpadEl.getBoundingClientRect();
+  const cx = rect.left + rect.width/2;
+  const cy = rect.top  + rect.height/2;
+  const r  = rect.width/2;
+  const d  = dpadAngle(x, y, cx, cy, r);
+
+  input.left  = d.left  || false;
+  input.right = d.right || false;
+  input.up    = d.up    || false;
+  input.down  = d.down  || false;
+
+  // Move nub visually (clamped to edge)
+  const clamp = Math.min(d.dist||0, 0.85);
+  const nx = (x - cx);
+  const ny = (y - cy);
+  const len = Math.sqrt(nx*nx+ny*ny)||1;
+  const px = (nx/len)*clamp*r;
+  const py = (ny/len)*clamp*r;
+  nubEl.style.transform = `translate(calc(-50% + ${px}px), calc(-50% + ${py}px))`;
 }
 
-function findButtonEl(el) {
-  // Walk up DOM to find a dpad-btn or face-btn
+function clearDpad() {
+  input.left = input.right = input.up = input.down = false;
+  nubEl.style.transform = 'translate(-50%, -50%)';
+  dpadTouchId = null;
+}
+
+dpadEl.addEventListener('touchstart', e => {
+  e.preventDefault();
+  if(dpadTouchId !== null) return;
+  const t = e.changedTouches[0];
+  dpadTouchId = t.identifier;
+  updateDpadFromPoint(t.clientX, t.clientY);
+}, {passive:false});
+
+document.addEventListener('touchmove', e => {
+  if(dpadTouchId === null) return;
+  for(const t of e.changedTouches) {
+    if(t.identifier === dpadTouchId) {
+      e.preventDefault();
+      updateDpadFromPoint(t.clientX, t.clientY);
+      return;
+    }
+  }
+}, {passive:false});
+
+document.addEventListener('touchend', e => {
+  for(const t of e.changedTouches) {
+    if(t.identifier === dpadTouchId) { clearDpad(); return; }
+  }
+}, {passive:true});
+
+document.addEventListener('touchcancel', e => {
+  for(const t of e.changedTouches) {
+    if(t.identifier === dpadTouchId) { clearDpad(); return; }
+  }
+}, {passive:true});
+
+// Mouse dpad for desktop
+dpadEl.addEventListener('mousedown', e => {
+  e.preventDefault();
+  const onMove = ev => updateDpadFromPoint(ev.clientX, ev.clientY);
+  const onUp   = ()  => { clearDpad(); document.removeEventListener('mousemove', onMove); document.removeEventListener('mouseup', onUp); };
+  updateDpadFromPoint(e.clientX, e.clientY);
+  document.addEventListener('mousemove', onMove);
+  document.addEventListener('mouseup', onUp);
+});
+
+// ── FACE BUTTONS (multi-touch) ───────────────────────────
+const faceMap = new Map(); // touchId → key
+
+function getFaceKey(el) {
+  if(!el) return null;
   let cur = el;
   while(cur && cur !== document.body) {
-    if(cur.classList && (cur.classList.contains('dpad-btn') || cur.classList.contains('face-btn'))) return cur;
+    if(cur.id==='btnAttack') return 'attack';
+    if(cur.id==='btnCard')   return 'card';
+    if(cur.id==='btnSwitch') return 'switchStack';
     cur = cur.parentElement;
   }
   return null;
 }
 
-function onTouchStart(e) {
+document.addEventListener('touchstart', e => {
   const el = e.target;
-  // Don't intercept taps on overlay buttons — let them fire normally
-  if(el.classList.contains('overlay-btn') || el.closest('.overlay')) return;
-  e.preventDefault();
-  for(const touch of e.changedTouches) {
-    const target = findButtonEl(getTouchTarget(touch));
-    if(!target) continue;
-    const key = getKeyForElement(target);
+  if(el.classList && el.classList.contains('overlay-btn')) return;
+  if(el.closest && el.closest('.overlay')) return;
+  if(el === dpadEl || el.closest('#dpad')) return; // handled above
+  for(const t of e.changedTouches) {
+    const target = document.elementFromPoint(t.clientX, t.clientY);
+    const key = getFaceKey(target);
     if(!key) continue;
-    touchMap.set(touch.identifier, key);
+    e.preventDefault();
+    faceMap.set(t.identifier, key);
     input[key] = true;
-    target.classList.add('pressed');
+    document.getElementById(
+      key==='attack'?'btnAttack':key==='card'?'btnCard':'btnSwitch'
+    ).classList.add('pressed');
   }
-}
+}, {passive:false});
 
-function onTouchEnd(e) {
-  const el = e.target;
-  if(el.classList.contains('overlay-btn') || el.closest('.overlay')) return;
-  e.preventDefault();
-  for(const touch of e.changedTouches) {
-    const key = touchMap.get(touch.identifier);
+document.addEventListener('touchend', e => {
+  for(const t of e.changedTouches) {
+    const key = faceMap.get(t.identifier);
     if(key) {
-      touchMap.delete(touch.identifier);
-      if(![...touchMap.values()].includes(key)) {
+      faceMap.delete(t.identifier);
+      if(![...faceMap.values()].includes(key)) {
         input[key] = false;
+        document.getElementById(
+          key==='attack'?'btnAttack':key==='card'?'btnCard':'btnSwitch'
+        ).classList.remove('pressed');
       }
     }
   }
-  // Sync pressed visual state
-  document.querySelectorAll('.dpad-btn,.face-btn').forEach(btn => {
-    const k = getKeyForElement(btn);
-    if(k && !input[k]) btn.classList.remove('pressed');
-  });
-}
+}, {passive:true});
 
-document.addEventListener('touchstart', onTouchStart, {passive:false});
-document.addEventListener('touchend',   onTouchEnd,   {passive:false});
-document.addEventListener('touchcancel',onTouchEnd,   {passive:false});
-
-// Mouse fallback for desktop testing (single touch only)
+// Mouse face buttons
 function bindMouseBtn(id, key) {
   const el = document.getElementById(id);
-  el.addEventListener('mousedown', e => { e.preventDefault(); input[key]=true; el.classList.add('pressed'); });
+  if(!el) return;
+  el.addEventListener('mousedown', e => { e.preventDefault(); input[key]=true;  el.classList.add('pressed'); });
   el.addEventListener('mouseup',   e => { e.preventDefault(); input[key]=false; el.classList.remove('pressed'); });
-  el.addEventListener('mouseleave',e => { input[key]=false; el.classList.remove('pressed'); });
+  el.addEventListener('mouseleave',()  => { input[key]=false; el.classList.remove('pressed'); });
 }
-bindMouseBtn('dLeft','left'); bindMouseBtn('dRight','right');
-bindMouseBtn('dUp','up');     bindMouseBtn('dDown','down');
-bindMouseBtn('btnAttack','attack'); bindMouseBtn('btnCard','card'); bindMouseBtn('btnSwitch','switchStack');
+bindMouseBtn('btnAttack','attack');
+bindMouseBtn('btnCard','card');
+bindMouseBtn('btnSwitch','switchStack');
 
-// Keyboard — matches brawler P1 scheme:
-// Move: A/D, Jump: W, Down: S
-// Attack: Left Shift, Card: Left Alt, Switch: Left Ctrl
-function syncBtnVisual(key, active) {
-  const map = { left:'dLeft', right:'dRight', up:'dUp', down:'dDown',
-                attack:'btnAttack', card:'btnCard', switchStack:'btnSwitch' };
-  const id = map[key];
-  if(id) {
+// ── MENU BUTTON ──────────────────────────────────────────
+document.getElementById('menuBtn').addEventListener('click', showPauseMenu);
+document.getElementById('menuBtn').addEventListener('touchend', e => { e.stopPropagation(); showPauseMenu(); }, {passive:true});
+
+function showPauseMenu() {
+  if(!G || G.state==='cutscene') return;
+  const wasPlaying = G.state==='playing';
+  G.state='paused';
+  showOverlay('PAUSED', '', '', null);
+  // Custom buttons
+  const ov = document.getElementById('dynOverlay');
+  ov.querySelector('.overlay-body').remove();
+  ov.querySelector('.overlay-btn').remove();
+  const btns = document.createElement('div');
+  btns.style.cssText='display:flex;flex-direction:column;gap:10px;align-items:center;';
+  btns.innerHTML = `
+    <button class="overlay-btn" id="pauseResume">▶ RESUME</button>
+    <button class="overlay-btn" id="pauseRestart" style="background:transparent;border:2px solid var(--accent2);color:var(--accent2);">↺ RESTART LEVEL</button>
+    <button class="overlay-btn" id="pauseMenu" style="background:transparent;border:2px solid #888;color:#888;">⌂ MAIN MENU</button>
+  `;
+  ov.appendChild(btns);
+  const wire = (id, fn) => {
     const el = document.getElementById(id);
-    if(el) active ? el.classList.add('pressed') : el.classList.remove('pressed');
-  }
+    el.addEventListener('click', fn);
+    el.addEventListener('touchend', e => { e.stopPropagation(); fn(); }, {passive:true});
+  };
+  wire('pauseResume', () => { hideOverlay(); G.state='playing'; });
+  wire('pauseRestart', () => {
+    hideOverlay();
+    const lv = G.level;
+    G = createGame(); G.lives=3; G.hp=G.maxHp;
+    startLevel(lv);
+  });
+  wire('pauseMenu', () => { hideOverlay(); G=null; showStartScreen(); });
+}
+
+function showStartScreen() {
+  showOverlay(
+    'JS&T\nALIEN ESCAPE',
+    'Three boys.\nOne stack.\nA whole alien planet\nto escape.\n\nMOBILE: Touch buttons below\nKEYBOARD: A/D move · W jump\nLShift attack · LAlt card\nLCtrl switch',
+    '▶ START',
+    () => startGame()
+  );
+}
+
+// ── KEYBOARD (matches brawler P1) ────────────────────────
+function syncBtnVisual(key, active) {
+  const el = document.getElementById(
+    key==='attack'?'btnAttack':key==='card'?'btnCard':key==='switchStack'?'btnSwitch':null
+  );
+  if(el) active ? el.classList.add('pressed') : el.classList.remove('pressed');
 }
 
 document.addEventListener('keydown', e => {
-  // Prevent default for game keys so page doesn't scroll etc.
   const gameCodes = ['KeyA','KeyD','KeyW','KeyS','ShiftLeft','AltLeft','ControlLeft','Space','ArrowLeft','ArrowRight','ArrowUp','ArrowDown'];
   if(gameCodes.includes(e.code)) e.preventDefault();
-
-  if(e.code==='KeyA'||e.code==='ArrowLeft')  { input.left=true;        syncBtnVisual('left',true); }
-  if(e.code==='KeyD'||e.code==='ArrowRight') { input.right=true;       syncBtnVisual('right',true); }
-  if(e.code==='KeyW'||e.code==='ArrowUp'||e.code==='Space') { input.up=true; syncBtnVisual('up',true); }
-  if(e.code==='KeyS'||e.code==='ArrowDown')  { input.down=true;        syncBtnVisual('down',true); }
-  if(e.code==='ShiftLeft')  { input.attack=true;      syncBtnVisual('attack',true); }
-  if(e.code==='AltLeft')    { input.card=true;         syncBtnVisual('card',true); }
-  if(e.code==='ControlLeft'){ input.switchStack=true;  syncBtnVisual('switchStack',true); }
+  if(e.code==='Escape') { showPauseMenu(); return; }
+  if(e.code==='KeyA'||e.code==='ArrowLeft')  { input.left=true; }
+  if(e.code==='KeyD'||e.code==='ArrowRight') { input.right=true; }
+  if(e.code==='KeyW'||e.code==='ArrowUp'||e.code==='Space') { input.up=true; }
+  if(e.code==='KeyS'||e.code==='ArrowDown')  { input.down=true; }
+  if(e.code==='ShiftLeft')   { input.attack=true;     syncBtnVisual('attack',true); }
+  if(e.code==='AltLeft')     { input.card=true;        syncBtnVisual('card',true); }
+  if(e.code==='ControlLeft') { input.switchStack=true; syncBtnVisual('switchStack',true); }
 });
 document.addEventListener('keyup', e => {
-  if(e.code==='KeyA'||e.code==='ArrowLeft')  { input.left=false;       syncBtnVisual('left',false); }
-  if(e.code==='KeyD'||e.code==='ArrowRight') { input.right=false;      syncBtnVisual('right',false); }
-  if(e.code==='KeyW'||e.code==='ArrowUp'||e.code==='Space') { input.up=false; syncBtnVisual('up',false); }
-  if(e.code==='KeyS'||e.code==='ArrowDown')  { input.down=false;       syncBtnVisual('down',false); }
-  if(e.code==='ShiftLeft')  { input.attack=false;     syncBtnVisual('attack',false); }
-  if(e.code==='AltLeft')    { input.card=false;        syncBtnVisual('card',false); }
-  if(e.code==='ControlLeft'){ input.switchStack=false; syncBtnVisual('switchStack',false); }
+  if(e.code==='KeyA'||e.code==='ArrowLeft')  { input.left=false; }
+  if(e.code==='KeyD'||e.code==='ArrowRight') { input.right=false; }
+  if(e.code==='KeyW'||e.code==='ArrowUp'||e.code==='Space') { input.up=false; }
+  if(e.code==='KeyS'||e.code==='ArrowDown')  { input.down=false; }
+  if(e.code==='ShiftLeft')   { input.attack=false;     syncBtnVisual('attack',false); }
+  if(e.code==='AltLeft')     { input.card=false;        syncBtnVisual('card',false); }
+  if(e.code==='ControlLeft') { input.switchStack=false; syncBtnVisual('switchStack',false); }
 });
 
 function updateInputPressed() {
@@ -749,6 +865,8 @@ function startLevel(num) {
   G.shieldHits = 0;
   G.megaJump = false;
   G.attackTimer = 0;
+  G.pickupCount = 0;
+  G.nextLifeBox = 3 + Math.floor(Math.random()*4);
 
   G.stack = createStack();
   G.stack.x = num === 3 ? 60 : 60;
@@ -997,15 +1115,35 @@ function updatePlatformer(dt) {
   });
 
   // Pickups (world coords)
-  G.pickups.forEach(p => {
+  G.pickups.forEach((p, idx) => {
     if(p.collected) return;
     if(Math.abs(p.x-st.worldX)<18 && Math.abs(st.y-GROUND)<30) {
       p.collected = true;
-      const card = CARD_KEYS[Math.floor(Math.random()*CARD_KEYS.length)];
-      G.cardActive = card;
-      G.cardTimer = 0;
-      G.cardCooldown = 0;
-      addParticle(st.x, st.y-40, CARDS[card].emoji, 1200);
+      // Every 3rd to 6th box (randomly within that range) gives a life instead
+      if(!G.nextLifeBox) G.nextLifeBox = 3 + Math.floor(Math.random()*4);
+      G.pickupCount = (G.pickupCount||0) + 1;
+      if(G.pickupCount >= G.nextLifeBox) {
+        G.pickupCount = 0;
+        G.nextLifeBox = 3 + Math.floor(Math.random()*4);
+        G.lives = Math.min(G.lives+1, 5);
+        addParticle(st.x, st.y-40, '❤️', 1400);
+        updateHUD();
+      } else {
+        // Give a random card — bowtie gives instant shield
+        const card = CARD_KEYS[Math.floor(Math.random()*CARD_KEYS.length)];
+        if(card === 'bowtie') {
+          // Activate shield immediately, no card slot needed
+          G.shieldHits = 0;
+          G.cardTimer = 8000;
+          G.cardActive = 'bowtie';
+          addParticle(st.x, st.y-40, '🎀', 1200);
+        } else {
+          G.cardActive = card;
+          G.cardTimer = 0;
+          G.cardCooldown = 0;
+          addParticle(st.x, st.y-40, CARDS[card].emoji, 1200);
+        }
+      }
     }
   });
 
@@ -1048,6 +1186,10 @@ function gameOver() {
 
 function levelComplete() {
   G.state='levelcomplete';
+  // Replenish lives to 3 between levels
+  G.lives = 3;
+  G.hp = G.maxHp;
+  updateHUD();
   const callbacks = {
     1: ()=>showCutscene('level1end',()=>startLevel(2)),
     2: ()=>showCutscene('level2end',()=>startLevel(3)),
@@ -1504,17 +1646,9 @@ function loop(ts) {
 }
 
 // ─── KICK OFF ─────────────────────────────────────────────
-// Show start screen
-showOverlay(
-  'JS&T\nALIEN ESCAPE',
-  'Three boys.\nOne stack.\nA whole alien planet\nto escape.\n\nMOBILE: Touch buttons below\nKEYBOARD: A/D move · W jump\nLShift attack · LAlt card\nLCtrl switch',
-  '▶ START',
-  () => startGame()
-);
-// Initialize overlay reference before game starts
 G = createGame();
 G.state = 'cutscene';
-
+showStartScreen();
 requestAnimationFrame(loop);
 </script>
 </body>
